@@ -1,4 +1,4 @@
-Linux
+## Linux 
 
 To find when a system was rebooted:
 ```
@@ -18,7 +18,7 @@ To compare all files in two dirs:
 diff -bur folder1/ folder2/
 ```
 
-Filesystem
+## Filesystem
 
 
 How to view the contents of a directory when a separate drive is mounted on top of it.
