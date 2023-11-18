@@ -11,9 +11,9 @@ sudo ${KH}/kafka-topics.sh --create --zookeeper ${ZK} --replication-factor 1 --p
 
 sudo "${KH}"/kafka-topics.sh --create --zookeeper "${ZK}" --if-not-exists --topic events.failedEnriched   --partitions=1 --replication-factor=1 --config retention.bytes=-1 --config retention.ms=432000000 --config message.timestamp.difference.max.ms=432000000 --config min.insync.replicas=1 --config message.timestamp.type=LogAppendTime --config max.message.bytes=274857600
 
+```
 ![options](image.png)
 
-```
 To delete a topic:
 ```
 sudo ${KH}/kafka-topics.sh --zookeeper ${ZK}:2181 --delete --topic my_test_topic
