@@ -1,32 +1,3 @@
-## Dead region servers
-
-1. Stop Hbase
-2. Login to zookeeper using #hbase zkcli ( with a valid hbase ticket )
-3. Delete the /hbase-secure znode. rmr /hbase-secure
-4. Sideline the entries under HDFS dir. hdfs dfs -mv /hbase/MasterProcWALs/*  /tmp. ( Not sure if this was done earlier )
-5. Start Hbase
-
-
-## HMaster fails to start
-Scenario: Master boot cannot progress, defaults to standby until zone comes online (https://learn.microsoft.com/pt-br/azure/hdinsight/hbase/hbase-troubleshoot-start-fails#scenario-master-startup-cannot-progress-in-holding-pattern-until-region-comes-online)
-Problem
-HMaster fails to start due to the following warning:
-
-```
-hbase:namespace,,<timestamp_region_create>.<encoded_region_name>.is NOT online; state={<encoded_region_name> state=OPEN, ts=<some_timestamp>, server=<server_name>}; ServerCrashProcedures=true. Master startup cannot progress, in holding-pattern until region onlined. 
-
-```
-
-Cause
-HMaster will check the WAL directory on the zone servers before bringing zones back online OPEN . In this case, if that directory wasn't present, it wasn't starting
-
-Resolution
-Create this dummy directory using the command:sudo -u hbase hdfs dfs -mkdir /hbase-wals/WALs/<wn fqdn>,16000,1622012792000
-
-Restart the Ambari UI HMaster service.
-
-
-
 ## Useful commands:
 
 ```
@@ -56,3 +27,40 @@ sudo -u hbase hbase org.apache.hadoop.hbase.util.hbck.OfflineMetaRepair
 ```
 
 Hbase Azure Troubleshooting: https://learn.microsoft.com/en-us/azure/hdinsight/hbase/hbase-troubleshoot-start-fails 
+
+## Dead region servers
+
+1. Stop Hbase
+2. Login to zookeeper using #hbase zkcli ( with a valid hbase ticket )
+3. Delete the /hbase-secure znode. rmr /hbase-secure
+4. Sideline the entries under HDFS dir. hdfs dfs -mv /hbase/MasterProcWALs/*  /tmp. ( Not sure if this was done earlier )
+5. Start Hbase
+
+
+## HMaster fails to start
+Scenario: Master boot cannot progress, defaults to standby until zone comes online (https://learn.microsoft.com/pt-br/azure/hdinsight/hbase/hbase-troubleshoot-start-fails#scenario-master-startup-cannot-progress-in-holding-pattern-until-region-comes-online)
+Problem
+HMaster fails to start due to the following warning:
+
+```
+hbase:namespace,,<timestamp_region_create>.<encoded_region_name>.is NOT online; state={<encoded_region_name> state=OPEN, ts=<some_timestamp>, server=<server_name>}; ServerCrashProcedures=true. Master startup cannot progress, in holding-pattern until region onlined. 
+
+```
+
+Cause
+HMaster will check the WAL directory on the zone servers before bringing zones back online OPEN . In this case, if that directory wasn't present, it wasn't starting
+
+Resolution
+Create this dummy directory using the command:sudo -u hbase hdfs dfs -mkdir /hbase-wals/WALs/<wn fqdn>,16000,1622012792000
+
+Restart the Ambari UI HMaster service.
+
+## Why Does HMaster Exits Due to Timeout When Waiting for the Namespace Table to Go Online?
+- Increase the online waiting timeout period of the namespace table to ensure that the Master has enough time to coordinate the splitting tasks of the RegionServer worker and avoid repeated tasks.
+  hbase.master.namespace.init.timeout (default value: 3,600,000 ms)
+  
+  Increase the number of concurrent splitting tasks through RegionServer worker to ensure that RegionServer worker can process splitting tasks in parallel (RegionServers need more cores). Add the following parameters to Client installation path /HBase/hbase/conf/hbase-site.xml:
+  hbase.regionserver.wal.max.splitters (default value: 2)
+- If all restoration processes require time, increase the timeout period for initializing the monitoring thread.
+  hbase.master.initializationmonitor.timeout (default value: 3,600,000 ms)
+

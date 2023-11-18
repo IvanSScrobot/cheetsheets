@@ -22,6 +22,92 @@ ansible  ... -e ansible_password='{{ lookup("env", "pw") }}'
 ansible-playbook play.yml -e '{"test":["1.23.45", "12.12.12"]}'
 ```
 
+## How to filter, join and map lists in Ansible
+https://www.tailored.cloud/devops/how-to-filter-and-map-lists-in-ansible/
+
+TL;DR
+
+	- use “select”filter to filter a list and “match” to combine it with reg exps, like:
+	  1
+	  "{{ ansible_interfaces | select('match', '^(eth|wlan)[0-9]+') | list }}"
+	- use “map”to map list elements, like:
+	  1
+	  "{{ ansible_interfaces | map('upper') | list }}"
+	- use just “+” operator to combine two lists into one, like:
+	  1
+	  "{{ ansible_interfaces + [\"VETH-1\", \"VETH-2\"] }}"
+	- check here for more advanced example: Advanced list operations in Ansible
+
+## How to kill processes:
+
+```
+- name: Get running processes
+  shell: "ps -ef | grep -v grep | grep -w {{ PROCESS }} | awk '{print $2}'"
+  register: running_processes
+
+- name: Kill running processes
+  shell: "kill {{ item }}"
+  with_items: "{{ running_processes.stdout_lines }}"
+
+- wait_for:
+    path: "/proc/{{ item }}/status"
+    state: absent
+  with_items: "{{ running_processes.stdout_lines }}"
+  ignore_errors: yes
+  register: killed_processes
+
+- name: Force kill stuck processes
+  shell: "kill -9 {{ item }}"
+  with_items: "{{ killed_processes.results | select('failed') | map(attribute='item') | list }}"
+```
+
+## How to get item from list:
+```
+colors:
+  red: enabled
+  yellow: enabled
+  green: disabled
+  blue: enabled
+  purple: disabled
+
+colors_enabled: "{{ colors|dict2items|
+                           selectattr('value', 'eq', 'enabled')|
+                           map(attribute='key')|
+                           list }}"
+
+```
+gives the list of enabled colors:
+
+colors_enabled:
+  - red
+  - yellow
+  - blue
+
+## selectattr( )
+
+```
+---
+users:
+  - name: john
+    email: john@example.com
+  - name: jane
+    email: jane@example.com
+  - name: fred
+    email: fred@example.com
+    password: 123!abc
+
+```
+Next, the [author runs the following](http://blog.halberom.co.uk/post/ansible-selectattr/):
+
+```
+- set_fact:
+    emails: "{{ users | selectattr('password', 'undefined') | map(attribute='email') | list }}"
+```
+1. the “users” dictionary is being passed to the selectattr( )  filter.
+2. The selectattr() filter will cycle through all of the dictionaries (also known as objects) inside of “users”, looking for which ones do and do not have the “password” attribute specified.
+3. Because the ‘undefined’ Test has been passed as a parameter, only the objects which do not have a “password” attribute defined will be recorded.
+4. The map( ) filter is then used to return the “email” attribute of all objects that were recorded in the previous step.
+
 ## Error: "The specified collections path is not part of the configured Ansible collections paths" 
 in ansible.cfg, add 
 ```

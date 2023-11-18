@@ -1,9 +1,95 @@
 ## Useful commands
 ```
-
+KH=/usr/local/kafka/bin
+ZK=zk1:2181,zk2:2181,zk3:2181/sin-kafka
+BS=broker:9092
 ```
 
+To create a topic:
+```
+sudo ${KH}/kafka-topics.sh --create --zookeeper ${ZK} --replication-factor 1 --partitions 1 --topic test
+
+sudo "${KH}"/kafka-topics.sh --create --zookeeper "${ZK}" --if-not-exists --topic events.failedEnriched   --partitions=1 --replication-factor=1 --config retention.bytes=-1 --config retention.ms=432000000 --config message.timestamp.difference.max.ms=432000000 --config min.insync.replicas=1 --config message.timestamp.type=LogAppendTime --config max.message.bytes=274857600
+
+![options](image.png)
+
+```
+To delete a topic:
+```
+sudo ${KH}/kafka-topics.sh --zookeeper ${ZK}:2181 --delete --topic my_test_topic
+```
+
+To list the available topics:
+```
+sudo ${KH}/kafka-topics.sh --list --zookeeper ${ZK}
+```
+or
+```
+export KAFKA_HEAP_OPTS="-Xmx2g -Xms2g -XX:ParallelGCThreads=12" ;bash /usr/local/kafka/bin/kafka-run-class.sh kafka.admin.TopicCommand --zookeeper zk1 :2181,zk2 :2181,zk3 :2181/sin-kafka --list ; unset KAFKA_HEAP_OPTS
+```
+or use zkCli.sh from zookeeper installation
+
+To start console consumer and producer:
+```
+sudo ${KH}/kafka-console-producer.sh --broker-list `hostname`:9092 --topic events.raw
+sudo ${KH}/kafka-console-consumer.sh --bootstrap-server `hostname`:9092 --topic events.raw
+use --from-beginning to consume all events, not only those that are being produced in parallel by producer
+```
+
+
+Describe topics (will also show ISR):
+```
+sudo ${KH}/kafka-topics.sh --zookeeper "${ZK}" --describe --topic events.raw
+```
+
+To see under-replicated partitions:
+```
+sudo ${KH}/kafka-topics.sh --zookeeper "${ZK}" --describe --under-replicated-partitions
+```
+
+List consumer groups:
+```
+sudo ${KH}/kafka-consumer-groups.sh --zookeeper ${ZK}  -list
+```
+
+Describe consumer groups:
+```
+sudo ${KH}/kafka-consumer-groups.sh --zookeeper "${ZK}" --list \
+| grep "my_topic" \
+| xargs -I{} sudo ${KH}/kafka-consumer-groups.sh --zookeeper "${ZK}" --describe --group {}
+```
+or
+```
+export KAFKA_HEAP_OPTS="-Xmx2g -Xms2g -XX:ParallelGCThreads=12" ;bash /usr/local/kafka/bin/kafka-run-class.sh kafka.admin.ConsumerGroupCommand --zookeeper zk1:2181,zk2:2181,zk3:2181/my-kafka --list |grep "my_topic_suffix" | xargs -I{} /usr/local/kafka/bin/kafka-consumer-groups.sh --zookeeper zk1:2181,zk2:2181,zk3:2181/my-kafka --describe --group {} ; unset KAFKA_HEAP_OPTS
+```
+
+To read messages from a partition ( a *.log file):
+```
+sudo ./kafka-run-class.sh kafka.tools.DumpLogSegments --print-data-log 
+--deep-iteration --files /data1/kafka/events.raw-0/00000000000014819376.log
+```
+
+To change config for a topic:
+```
+kafka-configs.sh --zookeeper localhost:2181 --alter \
+--entity-type topics \
+--entity-name test \
+--add-config segment.ms=60000
+```
+
+To revert config changes:
+```
+kafka-configs.sh --zookeeper localhost:2181 --alter \
+--entity-type topics --entity-name test \
+--delete-config segment.ms
+```
+
+
+
 ## How to replay Kafka offset
+
+![options](image1.png)
+
 Guide: 
 
 https://gist.github.com/marwei/cd40657c481f94ebe273ecc16601674b#file-how_to_reset_kafka_consumer_group_offset-md
@@ -55,7 +141,7 @@ curl -s http://localhost:8778/jolokia/list | jq . | less
 #or
 curl -s http://localhost:8778/jolokia/read/kafka.server:type=BrokerTopicMetrics,name=MessagesInPerSec | jq .
 #or
-curl -s http://localhost:8778/jolokia/read/kafka.server:type=BrokerTopicMetrics,name=BytesOutPerSec,topic=cp.sal.events.raw | jq .
+curl -s http://localhost:8778/jolokia/read/kafka.server:type=BrokerTopicMetrics,name=BytesOutPerSec,topic=events.raw | jq .
 ```
 
 Also, use Jconsole if want to explore Java metrics (https://www.datadoghq.com/blog/collecting-kafka-performance-metrics/#collect-kafka-performance-metrics-with-jconsole) 
@@ -156,21 +242,21 @@ Telegraf conf:
   [[inputs.jolokia.servers]]
     host = "127.0.0.1"
     port = "8778"
-    name = "kafka1-sin-ursdev"
+    name = "kafka1-test-dev"
  
   [[inputs.jolokia.metrics]]
     name = "BytesInPerSec"
-    mbean  = "kafka.server:type=BrokerTopicMetrics,name=BytesInPerSec,topic=cp.sal.events.raw"
+    mbean  = "kafka.server:type=BrokerTopicMetrics,name=BytesInPerSec,topic=events.raw"
     attribute = "Count,MeanRate,OneMinuteRate"
  
   [[inputs.jolokia.metrics]]
     name = "BytesOutPerSec"
-    mbean  = "kafka.server:type=BrokerTopicMetrics,name=BytesOutPerSec,topic=cp.sal.events.raw"
+    mbean  = "kafka.server:type=BrokerTopicMetrics,name=BytesOutPerSec,topic=events.raw"
     attribute = "Count,MeanRate,OneMinuteRate"
  
   [[inputs.jolokia.metrics]]
     name = "MessagesInPerSec"
-    mbean  = "kafka.server:type=BrokerTopicMetrics,name=MessagesInPerSec,topic=cp.sal.events.raw"
+    mbean  = "kafka.server:type=BrokerTopicMetrics,name=MessagesInPerSec,topic=events.raw"
     attribute = "Count,MeanRate,OneMinuteRate"
  
   [[inputs.jolokia.metrics]]
@@ -183,3 +269,66 @@ Telegraf conf:
     mbean  = "java.lang:type=GarbageCollector,name=G1 Young Generation"
     attribute = "CollectionCount,CollectionTime"
 ```
+
+## Replica Assignment Changes
+1.First create the topics.json file with a list of the topics you are interested in moving (e.g. topics.json):
+
+{"topics":
+[{"topic": "test"}],
+"version":1
+}
+
+2. Generate a plan
+```
+kafka-reassign-partitions.sh --zookeeper localhost:2181 --generate \
+--topics-to-move-json-file topics.json --broker-list 0,1,2
+```
+Copy the second part of the output into a file, e.g. plan.json
+
+3. Start the reassignments: 
+```
+kafka-reassign-partitions.sh --zookeeper localhost:2181 --execute --reassignment-json-file plan.json
+```
+
+4. Get the current state of the process:
+```
+kafka-reassign-partitions.sh --zookeeper localhost:2181 --verify --reassignment-json-file plan.json
+```
+
+## Altering the Number of Replicas
+
+1. Create a file with plan (0 and 1 are an array of broker ids where replicas should exist in the future):
+{"partitions":
+  [{"topic": "test", "partition": 0,
+    "replicas": [
+      0,
+      1
+    ]
+  }
+  ],
+"version":1
+}
+
+2. Execute the plan to increase replica count
+```
+kafka-reassign-partitions.sh --zookeeper localhost:2181 --execute \
+--reassignment-json-file replicacount.json
+```
+![options](image2.png)
+
+
+## Preferred Replica Elections
+
+To bring leadership back to replicas as they existed on creation of a topic (All of the topic partitions for our cluster will be impacted):
+```
+kafka-preferred-replica-election.sh --zookeeper localhost:2181
+```
+
+To limit the scope of changes, use --path-to-json-file option. Below is an example of a file:
+{"partitions":
+	[{"topic": "test", "partition": 1},
+	{"topic": "my_test", "partition": 2}
+	]
+}
+
+https://rmoff.net/2018/08/02/kafka-listeners-explained/ 
