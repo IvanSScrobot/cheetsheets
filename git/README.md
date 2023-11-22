@@ -218,3 +218,18 @@ git checkout -p source_branch -- <paths>...
 ```
 git config --global color.ui auto
 ```
+
+## How can I save username and password in Git?
+if these commands don't work:
+```
+git config user.name "your username" 
+git config user.password "your password"
+```
+
+, we can use the git config to enable credentials storage in Git. It's not safe though, password is in plain text in  ~/.git-credentials 
+
+```
+git config --global credential.helper store
+```
+## 'Personal' gitignore
+vim .git/info/exclude

@@ -40,9 +40,12 @@ sudo du -h --max-depth=1 /var
 ```
 
 ```
-rsync -ah --progress source-file destination-file
+du -x 
+du -shx /*
 ```
-How To Use Rsync to Sync Local and Remote Directories | DigitalOcean
+will not traverse any mount points it encounters. But if it is told to start at a mount point then it will do as requested.
+
+
 
 How to find multiple files
 ```
@@ -70,7 +73,7 @@ sudo find /var/log/kafka/logs/ -type f -mtime +15 -exec rm -f {} \;
 ```
 
 
-Find files with a text, recursively. Return only filenames.
+### Find files with a text, recursively. Return only filenames.
 ```
 grep -lr "target_centos_major_minor" *
 ```
@@ -84,6 +87,30 @@ grep -rnw '/path/to/somewhere/' -e 'pattern'
 - -l (lower-case L) can be added to just give the file name of matching files.
 - -e is the pattern used during the search
 Along with these, --exclude, --include, --exclude-dir flags could be used for efficient searching
+
+### rsync
+
+For dry run:
+```
+rsync -anv dir1/ dir2
+```
+
+```
+rsync -ah --progress source-file destination-file
+```
+you can reduce the network transfer by adding compression with the -z option:
+```
+rsync -az source destination
+```
+
+
+The -P flag is very helpful. It combines the flags --progress and --partial. The first of these gives you a progress bar for the transfers and the second allows you to resume interrupted transfers:
+
+```
+rsync -azP source destination
+```
+More [here](https://www.digitalocean.com/community/tutorials/how-to-use-rsync-to-sync-local-and-remote-directories)
+
 
 Example of tee + sudo
 ```
