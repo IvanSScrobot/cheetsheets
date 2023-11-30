@@ -232,4 +232,25 @@ git config user.password "your password"
 git config --global credential.helper store
 ```
 ## 'Personal' gitignore
-vim .git/info/exclude
+```vim .git/info/exclude```
+
+See https://www.atlassian.com/git/tutorials/saving-changes/gitignore#personal-git-ignore-rules
+
+## git-show
+https://www.atlassian.com/git/tutorials/git-show
+
+```it show --pretty="" --name-only bd61ad98```
+
+This will list all the files that were touched in a commit
+
+```git show REVISION:path/to/file```
+
+This will show a specific version of a file. Replace the REVISON with a Git sha.
+
+```git show v2.0.0 6ef002d74cbbc099e1063728cab14ef1fc49c783```
+
+This will show the v2.0.0 tag and also commit at 6ef002d74cbbc099e1063728cab14ef1fc49c783
+
+```git show commitA...commitD```
+
+This will output all commits in the range from commitA to commit D
