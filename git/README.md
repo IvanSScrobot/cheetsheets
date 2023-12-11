@@ -81,6 +81,11 @@ git remote -v
 git diff branch1..branch2
 ```
 
+## Compare branches (file names only):
+```
+git diff --name-status branch1..branch2
+```
+
 ## Compare commits between two branches
 ```
 $ git log branch1..branch2
@@ -126,6 +131,11 @@ gitk --follow [filename]
 ## Undo the last commit:
 ```
 git reset --hard HEAD~1
+```
+
+## Hard reset a single file:
+```
+git checkout HEAD -- my-file.txt
 ```
 
 ## Undo the last commit but leave changes as uncommitted local modifications in your working copy.:

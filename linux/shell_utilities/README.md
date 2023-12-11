@@ -8,6 +8,8 @@ $ last -x reboot
 $ last reboot | head -1
 $ last -x shutdown
 
+sudo last -f /var/log/wtmp-20231201| grep boot -A 5 -B 5
+
 
 $ who -b
 ```
