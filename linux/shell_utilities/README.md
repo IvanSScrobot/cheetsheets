@@ -343,3 +343,10 @@ Defaults    secure_path = /sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin
 
 Setting environmental variables: https://help.ubuntu.com/community/EnvironmentVariables#A.2BAH4-.2F.pam_environment
 https://askubuntu.com/questions/866161/setting-path-variable-in-etc-environment-vs-profile , https://stackoverflow.com/questions/8633461/how-to-keep-environment-variables-when-using-sudo/33183620#33183620
+
+## tcpdump
+
+```
+ sudo tcpdump -i  eth0 "tcp port 8443 and dst 10.x6x.x8x.1" -XX 
+ 
+```
