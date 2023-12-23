@@ -143,6 +143,13 @@ git checkout HEAD -- my-file.txt
 git reset --soft HEAD~1
 ```
 
+## Remove a file from remote repo after adding it to .gitignore
+```
+git rm -r --cached filename
+git commit -m 'Removed filename'
+git push origin master
+```
+
 ## 'Squash' several commits:
 ```
 git reset --soft HEAD~3 &&
