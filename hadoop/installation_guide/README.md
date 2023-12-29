@@ -48,3 +48,31 @@ https://docs.cloudera.com/HDPDocuments/HDP3/HDP-3.1.4/index.html
 https://docs.cloudera.com/HDPDocuments/Ambari-2.7.4.0/bk_ambari-installation/content/ambari_repositories.html
 
 https://docs.cloudera.com/HDPDocuments/Ambari-2.7.4.0/bk_ambari-upgrade-major/content/ambari_upgrade_guide.html
+
+# To manually clean servers
+The use case: a datanode was taken out from HDP cluster, and now we need to clean it and bring back to the cluster. Ambari doesn't allow to re-install itself on the same nodes that were previously removed from the cluster, so we need to manually remove packages:
+
+```
+rm -rf /etc/yum.repos.d/ambari.repo /etc/yum.repos.d/HDP*
+yum remove hive*
+yum remove oozie*
+yum remove pig*
+yum remove zookeeper*
+yum remove tez*
+yum remove hbase*
+yum remove ranger*
+yum remove knox*
+yum remove ranger*
+yum remove storm*
+yum remove hadoop*
+ 
+for i in {2..61}; do mkdir -p /data$i/dfs/dn && chown -R hdfs:hadoop /data$i/dfs/dn && chmod -R 750 /data$i/dfs/dn; done
+for i in {2..61}; do mkdir -p /data$i/yarn/local && chown yarn:hadoop  /data$i/yarn/local && chmod -R 755 /data$i/yarn/local; done
+for i in {2..61}; do mkdir -p /data$i/yarn/log && chown yarn:hadoop  /data$i/yarn/log && chmod -R 755 /data$i/yarn/log; done
+```
+
+# To manually start datanode process when a node is not under Ambari management:
+```
+cd /data1/var/lib/ambari-agent/
+./ambari-sudo.sh su hdfs -l -s /bin/bash -c 'ulimit -c unlimited ; /usr/hdp/3.1.4.0-315/hadoop/bin/hdfs --config /usr/hdp/3.1.4.0-315/hadoop/conf --daemon start datanode'
+```

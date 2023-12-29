@@ -49,3 +49,19 @@ To access filesystems of misbehaving containers,
 ls /proc/<PID>/root/usr/bin
 ```
 
+## Debug a single container
+```
+kubectl debug -it -c debugger --target=target_container --image=busybox ${POD_NAME}
+```
+Ephemeral container can see processes of the target container
+
+## Debug a copy of target Pod
+```
+kubectl debug -it -c debugger --image=busybox \
+  --copy-to test-pod \
+  --share-processes \
+  ${POD_NAME}
+```
+
+## Ephemeral Containers Without kubectl debug
+https://iximiuz.com/en/posts/kubernetes-ephemeral-containers/

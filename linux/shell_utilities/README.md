@@ -350,3 +350,10 @@ https://askubuntu.com/questions/866161/setting-path-variable-in-etc-environment-
  sudo tcpdump -i  eth0 "tcp port 8443 and dst 10.x6x.x8x.1" -XX 
  
 ```
+
+## awk
+
+To get a sum:
+```
+awk -F',' '{sum+=$57;} END{print sum;}' file.txt
+```
