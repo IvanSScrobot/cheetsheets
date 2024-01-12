@@ -180,4 +180,7 @@ export ANSIBLE_HOST_KEY_CHECKING=False
 
 ## The right way to limit hosts
 
+```
 --limit='~sparkworker(1[1-9]|2[0-9]|3[0-6])-${fqdn},localhost'
+```
+
