@@ -5,7 +5,7 @@ Manual: https://stedolan.github.io/jq/manual/#Basicfilters
 More examples: https://www.howtogeek.com/529219/how-to-parse-json-files-on-the-linux-command-line-with-jq/
 
 
-To print the first SAL event from Avro's payload:
+To print the first event from Avro's payload:
 ```
 jq -s '.[0]'
 ```
