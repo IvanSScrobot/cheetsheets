@@ -34,3 +34,41 @@ E.g. remove all comments:
 #case sensitive, don't ask for confirmatio
 :%s/foo/bar/gI
 ```
+
+## Open several files in one window (e.g. 2 files side b side)
+
+In a shell:
+```
+vim -o file1.txt file2.txt file3.txt
+```
+-p[N]  Open N tab pages (default: one for each file)
+
+-o[N]  Open N windows (default: one for each file)
+
+-O[N]  Like -o but split vertically
+
+Inside vim:
+
+```
+Ctrl+W, S (case does not matter) for horizontal splitting
+
+Ctrl+W, v (lower case) for vertical splitting
+
+Ctrl+W, q (lower case) to close one
+
+:Ex <directory> , lets you browse for the file from the given directory. Or, use
+
+:Sex (Split & Explore current file's directory)
+:Hex (Horizontal Split and Explore)
+
+```
+
+## To set up tabs and cursors:
+in ~/.vimrc, add: 
+```
+autocmd FileType yaml set ts=2 sw=2 et ai
+autocmd FileType yaml set cursorcolumn
+```
+
+## To copy yaml examples with no multiplying identations
+:set paste 
