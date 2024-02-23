@@ -362,3 +362,34 @@ awk -F',' '{sum+=$57;} END{print sum;}' file.txt
 ```
 for i in {11..20}; do sshpass -f /path/to/file/with/password  scp -r ~/directory_to_copy username@node${i}-fqdn:/home/username ; done
 ```
+
+## Check network connections
+Display TCP/UDP sockets
+
+```
+#for TCP:
+ss -t -a
+#or
+netstat -nat 
+
+#for UDP:
+ss -u -a
+netstat -nau
+```
+
+iftop listens to network traffic and displays a table of current bandwidth usage by pairs of hosts
+```
+iftop -i eth1
+iftop -F 192.168.1.0/24
+
+```
+
+View established connections only
+```
+netstat -natu | grep 'ESTABLISHED'
+```
+
+tcptrack monitors their state and displays information such as state, source/destination addresses and bandwidth usage
+```
+tcptrack -i eth0
+```
