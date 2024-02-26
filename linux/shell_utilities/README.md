@@ -393,3 +393,20 @@ tcptrack monitors their state and displays information such as state, source/des
 ```
 tcptrack -i eth0
 ```
+
+### nmap
+
+Scan all ports on all hosts in the network: `nmap 192.168.0.0/24`
+
+A quick scan to find live host: `nmap -sn 192.168.0.0/24`. In older versions, instead of -sn, nmap accepted -Sp.
+For more grapable format, use -oG
+
+Scanning specific ports, regardless of their state: open, closed, filtered, etc: `nmap -sV -p 22,443 192.168.0.0/24`
+
+Packet-tracing with nmap: `nmap -vv -n -sn -PE -T4 --packet-trace 192.168.2.3`
+
+#### NSE scripts
+```
+nmap --script="name_of_script" --script-args="argument=arg" target
+```
+Scripts are available in /usr/share/nmap/scripts/

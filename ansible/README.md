@@ -184,3 +184,10 @@ export ANSIBLE_HOST_KEY_CHECKING=False
 --limit='~sparkworker(1[1-9]|2[0-9]|3[0-6])-${fqdn},localhost'
 ```
 
+## What's the difference between include_tasks and import_tasks?
+
+All import* statements are pre-processed at the time playbooks are parsed.
+All include* statements are processed as they encountered during the execution of the playbook.
+
+https://docs.ansible.com/ansible/devel/playbook_guide/playbooks_reuse.html#includes-vs-imports
+https://docs.ansible.com/ansible/devel/playbook_guide/playbooks_reuse.html#dynamic-vs-static

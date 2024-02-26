@@ -45,3 +45,8 @@ firewall-cmd --permanent --zone=internal --add-rich-rule='rule protocol value="i
 
 firewall-cmd --reload
 ```
+
+## Links
+[RedHat docs](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/security_guide/sec-managing_icmp_requests#:~:text=The%20block%20inversion%20inverts%20the,were%20blocked%20are%20not%20blocked.)
+[firewalld.org](https://firewalld.org/documentation/man-pages/firewalld.richlanguage.html)
+[Understanding Firewalld in Multi-Zone Configurations](https://www.linuxjournal.com/content/understanding-firewalld-multi-zone-configurations)
