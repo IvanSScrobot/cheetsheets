@@ -35,3 +35,10 @@ function getIP(str,ret){
 NR > 1 {{if(NR==2)print "Local - Remote";local=getIP($2);remote=getIP($3)}{print local" - "remote}}' /proc/net/tcp
 ```
 From https://staaldraad.github.io/2017/12/20/netstat-without-netstat/
+
+## Proc as an alternative to the ps 
+```
+for proc in /proc/*/cmdline; do echo $(basename $(dirname $proc)) $(cat $proc | tr "\0" " "); done
+# or
+for proc in /proc/[0-9]*/cmdline; do echo $(basename $(dirname $proc)) $(cat $proc | tr "\0" " "); done
+```
