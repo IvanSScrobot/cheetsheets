@@ -191,3 +191,16 @@ All include* statements are processed as they encountered during the execution o
 
 https://docs.ansible.com/ansible/devel/playbook_guide/playbooks_reuse.html#includes-vs-imports
 https://docs.ansible.com/ansible/devel/playbook_guide/playbooks_reuse.html#dynamic-vs-static
+
+## Use hostname in ad-hoc commands
+
+```
+ansible all -m shell -a "/bin/ping -c3 {{inventory_hostname}}"
+
+ansible all -m shell -a "/bin/ping -c3 \`hostname\`"
+
+ansible all -m shell -a '/bin/ping -c3 `hostname`'
+```
+{inventory_hostname}} - is taken from inventory files
+{{ ansible_nodename }} - hostname as the system reports it
+{{ ansible_hostname }} - unqualified hostname that shows the string before the first period(.)
