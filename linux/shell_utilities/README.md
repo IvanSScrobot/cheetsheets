@@ -358,6 +358,12 @@ To get a sum:
 awk -F',' '{sum+=$57;} END{print sum;}' file.txt
 ```
 
+Print all but the first column:
+
+```
+awk '{$1=""; print $0}' somefile
+```
+
 ## scp to multiple nodes and avoid entering password
 ```
 for i in {11..20}; do sshpass -f /path/to/file/with/password  scp -r ~/directory_to_copy username@node${i}-fqdn:/home/username ; done
