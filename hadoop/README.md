@@ -47,7 +47,7 @@ echo dump | nc localhost 2181 | grep brokers
 
 Why is Zookeeper necessary for Apache Kafka?
 
-
+https://www.conduktor.io/kafka/zookeeper-with-kafka/#Should-you-use-Zookeeper-with-Kafka-clients?-2
 
 Controller election
 
