@@ -1,4 +1,4 @@
-How to manually handle znodes:
+## How to manually handle znodes:
 https://programmer.group/zookeeper-command-line-tool-zkcli.sh.html
 
 to delete zookeeper info about Kafka brokers, go to /usr/local/kafka/bin/ and run 
@@ -17,14 +17,14 @@ to check if Zookeeper ok, from a 'deploy' node (for example) , run
 echo 'ruok' | nc "${ZK}" 2181; echo
 ```
 
-Confirming the Election Status of a ZooKeeper Service:
+## Confirming the Election Status of a ZooKeeper Service:
 ```
 echo "stat" | nc server.example.org 2181 | grep Mode
 
 bin/zkServer.sh status
 ```
 
-ZooKeeper commands: 
+## ZooKeeper commands: 
 https://zookeeper.apache.org/doc/r3.4.5/zookeeperAdmin.html#sc_zkCommands
 
 To quickly test Zookeeper:
@@ -45,7 +45,7 @@ echo dump | nc localhost 2181 | grep brokers
 
 
 
-Why is Zookeeper necessary for Apache Kafka?
+## Why is Zookeeper necessary for Apache Kafka?
 
 https://www.conduktor.io/kafka/zookeeper-with-kafka/#Should-you-use-Zookeeper-with-Kafka-clients?-2
 
