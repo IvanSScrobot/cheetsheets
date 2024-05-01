@@ -416,3 +416,9 @@ Packet-tracing with nmap: `nmap -vv -n -sn -PE -T4 --packet-trace 192.168.2.3`
 nmap --script="name_of_script" --script-args="argument=arg" target
 ```
 Scripts are available in /usr/share/nmap/scripts/
+
+### List cron jobs for all users
+```
+for user in $(cut -f1 -d: /etc/passwd); do crontab -u $user -l; done
+```
+
