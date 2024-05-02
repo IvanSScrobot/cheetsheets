@@ -26,7 +26,6 @@ kafka-console-producer.sh --bootstrap-server localhost:9092 --topic first_topic 
 ``` 
 ./kafka-consumer-groups.sh --bootstrap-server localhost:9092 --describe --group consumer
 
-kafka-consumer-groups.sh --bootstrap-server localhost:9092 --describe --all-groups  --state
 ```
 
 ### List all consumer groups
@@ -48,14 +47,24 @@ We can use one of --to-datetime, --by-period, --to-earliest, --to-latest, --shif
 ### Describe all consumer groups and state
 
 ```
-kafka-consumer-groups.sh --bootstrap-server localhost:9092 --describe --all-groups  --state
+./kafka-consumer-groups.sh --bootstrap-server localhost:9092 --describe --all-groups  --state
 
 ```
 
 ## kafka-config
-### Change number of in-sync replicas
+### Change number of in-sync replicas on a topic level
 ```
-kafka-configs.sh --bootstrap-server localhost:9092 --alter --entity-type topics --entity-name configured-topic --add-config min.insync.replicas=2
+./kafka-configs.sh --bootstrap-server localhost:9092 --alter --entity-type topics --entity-name configured-topic --add-config min.insync.replicas=2
+```
+
+### Change number of in-sync replicas for brokers
+```
+$ kafka-configs.sh --bootstrap-server localhost:9092 --alter --entity-type brokers --entity-default --add-config min.insync.replicas=2 
+```
+
+### Set Log retention
+```
+kafka-configs.sh --bootstrap-server localhost:9092 --alter --entity-type topics --entity-name configured-topic --add-config retention.ms=-1,retention.bytes=524288000
 ```
 
 ## kafka-reassign-partitions
