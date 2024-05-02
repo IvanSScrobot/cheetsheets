@@ -29,6 +29,11 @@ Where A is older than B, and remember A is NOT included. So it should be parent 
 ```
 (https://stackoverflow.com/questions/11929766/how-to-delete-all-git-commits-except-the-last-five) 
 
+## How to remove Changes Not Staged for Commit
+```
+git checkout -- .
+```
+
 ## How to rename a local/remote branch:
 ```
 #To rename the local branch to the new name
