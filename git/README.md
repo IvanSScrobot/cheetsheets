@@ -276,3 +276,7 @@ This will show the v2.0.0 tag and also commit at 6ef002d74cbbc099e1063728cab14ef
 ```git show commitA...commitD```
 
 This will output all commits in the range from commitA to commit D
+
+## reflog
+https://www.atlassian.com/git/tutorials/rewriting-history/git-reflog 
+
