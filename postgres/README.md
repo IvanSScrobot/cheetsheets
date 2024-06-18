@@ -95,18 +95,16 @@ https://www.postgresql.org/docs/12/functions-admin.html#FUNCTIONS-ADMIN-BACKUP-T
 0. Check state of replication
 ```select * from pg_stat_replication;```
 
-
 1. On master, to tet the master's current WAL, run
 ```
 SELECT pg_current_wal_lsn();
-
 ```
 it returns:
+
  pg_current_wal_lsn 
 --------------------
  4/100146B8
 (1 row)
-
 
 
 2. On secondary, get the current WAL segments received (flushed or applied/replayed):
@@ -124,8 +122,8 @@ select pg_is_in_recovery(),pg_is_wal_replay_paused(), pg_last_wal_receive_lsn(),
 ```
 select pg_wal_lsn_diff('4/100146B8','4/10014500');
 ```
-
 The result:
+
  pg_wal_lsn_diff 
 -----------------
              440
@@ -135,7 +133,7 @@ If the number is big, translate it into Gb:
 select round(__number__/pow(1024,3.0),2) missing_lsn_GiB;
 ```
 
-4. also on sec, check 
+4. Also on sec, check 
 ```
 SELECT * FROM pg_stat_wal_receiver;
 ```
