@@ -289,7 +289,13 @@ To extract rpm file:
 ```
 rpm2cpio php-5.1.4-1.esp1.x86_64.rpm | cpio -idmv
 ```
-  
+
+To see list a downloaded package's dependencies/requirements:
+```
+$ rpm -qp mypackage.rpm --provides
+$ rpm -qp mypackage.rpm --requires
+```
+( the same works for installed packages with `rpm -qi  mypackage.rpm --provides`)
 
 SAR
 https://www.thegeekstuff.com/2011/03/sar-examples/
