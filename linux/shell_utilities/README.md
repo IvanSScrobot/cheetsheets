@@ -428,3 +428,10 @@ Scripts are available in /usr/share/nmap/scripts/
 for user in $(cut -f1 -d: /etc/passwd); do crontab -u $user -l; done
 ```
 
+### Check which connections use SSL
+```
+SELECT datname,usename, ssl, client_addr 
+  FROM pg_stat_ssl
+  JOIN pg_stat_activity
+    ON pg_stat_ssl.pid = pg_stat_activity.pid;
+```
