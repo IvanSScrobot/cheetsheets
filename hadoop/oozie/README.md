@@ -31,9 +31,9 @@ the above will list all of the running coordinator jobs, find the one that match
 want to re-run
 
 Execute the job using the following command:
-$ oozie job -rerun <coord_Job_id> -date <nominal date> -oozie http://localhost:11000/oozie
+$ oozie job -rerun <coord_Job_id> -date \<nominal date\> -oozie http://localhost:11000/oozie
 
-where <nominal date> is in the format 2017-11-02T08:00Z and is the workflow instance property oozie_sla_nominalTime
+where \<nominal date\> is in the format 2017-11-02T08:00Z and is the workflow instance property oozie_sla_nominalTime
 ```
 <property>
 <name>oozie_sla_nominalTime</name>
